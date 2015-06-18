@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+		<title>TP-TACS</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-datepicker.min.css" rel="stylesheet">
+    
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+    
+  </head>
+  <body>
+  
+<div id="fb-root"></div>
+ <h1 class="cover-heading" style="font-weight: bold;">Por el mundo</h1>
+<div id="status" class="lead"></div>
+  <div class="fb-login-button"
+       scope="public_profile,email,user_friends"
+       data-max-rows="0"
+       data-size="xlarge"	
+       data-auto-logout-link="false"
+       onlogin="checkLoginState();">
+ </div>	
+
+	
+
+    <!-- Libraries -->
+    <script src="js/lib/jquery-min.js"></script>
+		<!-- App -->
+		<script src="js/index.js"></script>
+
+  </body>
+</html>

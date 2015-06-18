@@ -1,0 +1,9 @@
+Para correr la app:
+
+1. Setear la variable de entorno DESPEGAR_API_KEY con la API key correspondiente en el sistema operativo.
+Ejemplo para linux:
+export DESPEGAR_API_KEY=0123456789
+(solo sirve para la instancia de la terminal actual)
+
+2. mvn appengine:devserver
+

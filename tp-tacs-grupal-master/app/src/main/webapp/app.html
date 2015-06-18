@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>TP-TACS - Entrega 3 (Social)</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+
+  </head>
+  <body>
+
+		<!-- Navbar -->
+	<nav class="navbar navbar-default">
+  	<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">TP-TACS</a>
+			</div>
+
+			<ul class="nav navbar-nav">
+	       <li class="active" id="nav-inicio"><a id="link-inicio" href="#">Inicio</a></li>
+	       <li id="nav-perfil"><a id="link-perfil" href="#/perfil">Perfil</a></li>
+	       <li id="nav-misViajes"><a id="link-perfil" href="#/misViajes">Mis viajes</a></li>
+	       <li id="nav-viajes"><a id="link-viajes" href="#/busqueda">Crear</a></li>
+	       <li class="fa fa-facebook" id="link-cerrar"><a id="cerrarSesion" href="#">Cerrar sesion</a></li>
+			</ul>
+  	</div>
+	</nav>
+
+		<!-- Main container -->
+		<div>
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2" id="container">
+								Cargando...
+				</div>
+			</div>
+
+		</div>
+
+		<!-- Templates -->
+		<script type="text/template" id="itinerario-template">
+			<div>
+
+				<div><h2><span class="label label-info">Itinerario <%= identificador %></span></h2></div>
+
+				<h3><p class="bg-primary text-center">Ida</p></h3>
+				<div id="opciones-outbound-container">
+				</div>
+
+
+				<h3><p class="bg-primary text-center">Vuelta</p></h3>
+				<div id="opciones-inbound-container">
+				</div>
+				<div>
+					<label for="precio">Precio:$</label><%= precio %>
+					<button type="button" class="btn btn-primary center-block" id="crearButton" disabled="disabled">Crear viaje</button>
+					<div id="help-crear" class="text-center">(Para crear un viaje debe seleccionar al menos 1 opcion de ida y una opcion de vuelta)</div>
+				</div>
+			</div>
+
+		</script>
+
+		<script type="text/template" id="opcion-template">
+			<div class="panel panel-info" id="opcionPanel" data-toggle="tooltip" data-placement="right" title="click para seleccionar opcion">
+				<div class="panel-heading">
+					Opcion: <%= opcion %>
+				</div>
+
+				<div class="panel-body">
+					<h4>Segmentos</h4>
+				</div>
+
+				<table class="table">
+					<% _.each(segmentos, function(segmento){ %>
+						<tr>
+							<th>Desde</th>
+							<th>Hasta</th>
+							<th>Aerolinea</th>
+							<th>Id vuelo</th>
+							<th>Tipo</th>
+						</tr>
+
+						<tr>
+							<th><%= segmento.from %></th>
+							<th><%= segmento.to %></th>
+							<th><%= segmento.airline %></th>
+							<th><%= segmento.flight_id %></th>
+							<th><%= segmento.cabin_type %></th>
+						</tr>
+					<% }); %>
+				</table>
+			</div>
+		</script>
+
+		<script type="text/template" id="miViaje-template">
+			<div class="panel panel-info" id="miViajePanel">
+				<div class="panel-heading">
+					Viaje: [Aca va el ID del viaje, a implementar cuando haya una base de datos real]
+				</div>
+
+				<div class="panel-body">
+					<h4><b>Desde:</b> <%= from %> </h4>
+					<h4><b>Hacia:</b> <%= to %> </h4>
+					<h4><b>Fecha de salida:</b> <%= departure_date %> </h4>
+					<h4><b>Fecha de vuelta:</b> <%= return_date %> </h4>
+				</div>
+
+				<h3><p class="bg-primary text-center">Segmentos (Ida)</p></h3>
+				<table class="table">
+					<% _.each(outbound.segmentos, function(segmento){ %>
+						<tr>
+							<th>Desde</th>
+							<th>Hasta</th>
+							<th>Aerolinea</th>
+							<th>Id vuelo</th>
+							<th>Tipo</th>
+						</tr>
+
+						<tr>
+							<th><%= segmento.from %></th>
+							<th><%= segmento.to %></th>
+							<th><%= segmento.airline %></th>
+							<th><%= segmento.flight_id %></th>
+							<th><%= segmento.cabin_type %></th>
+						</tr>
+					<% }); %>
+				</table>
+
+				<h3><p class="bg-primary text-center">Segmentos (Vuelta)</p></h3>
+				<table class="table">
+					<% _.each(inbound.segmentos, function(segmento){ %>
+						<tr>
+							<th>Desde</th>
+							<th>Hasta</th>
+							<th>Aerolinea</th>
+							<th>Id vuelo</th>
+							<th>Tipo</th>
+						</tr>
+
+						<tr>
+							<th><%= segmento.from %></th>
+							<th><%= segmento.to %></th>
+							<th><%= segmento.airline %></th>
+							<th><%= segmento.flight_id %></th>
+							<th><%= segmento.cabin_type %></th>
+						</tr>
+					<% }); %>
+				</table>
+				<div>
+					<label for="precio">Precio:$</label><%= precio %>
+					<button type="button" class="btn btn-default center-block" id="mapaButton">Ver mapa</button>
+				</div>
+				<div id="map-canvas" style="width: 100%; height: 300px; position:relative; margin-top: 10px">
+				</div>
+			</div>
+		</script>
+
+		<script type="text/template" id="buscar-template">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					<form>
+		  			<div class="form-group">
+		  	  		<label for="oritenInput">Origen</label>
+		  	  		<input type="text" class="form-control" id="fromInput" placeholder="BUE">
+		  			</div>
+		  			<div class="form-group">
+  			  		<label for="destinoInput">Destino</label>
+  			  		<input type="text" class="form-control" id="toInput" placeholder="MAD">
+					  </div>
+		  			<div class="form-group">
+  			  		<label for="departureInput">Fecha de ida</label>
+  			  		<input type="text" class="form-control" id="departureInput" placeholder="2015-08-21">
+					  </div>
+		  			<div class="form-group">
+  			  		<label for="returnInput">Fecha de vuelta</label>
+  			  		<input type="text" class="form-control" id="returnInput" placeholder="2015-12-21">
+					  </div>
+
+  						<button type="submit" class="btn btn-default center-block" id="buscarButton">Buscar</button>
+
+					</form>
+				</div>
+			</div>
+
+			<div id="result-container">
+			</div>
+
+			<script type="text/javascript">
+				$("#departureInput").datepicker({
+				format: "yyyy-mm-dd",
+				startDate: "today"
+				});
+				$("#returnInput").datepicker({
+				format: "yyyy-mm-dd",
+				startDate: "today"
+				});
+			</script>
+
+
+	<script type="text/template" id="perfil-template">
+		<div class="panel panel-primary">
+		  <div class="panel-heading">
+		  	<h3 class="panel-title">Datos Usuario</h3>
+		  </div>
+		  <div class="panel-body">
+		  	<dl>
+			  <dt>Username</dt>
+		  	  <dd><%= username %><dd>
+			  <dt>Nombre</dt>
+		  	  <dd><%= nombre %></dd>
+			  <dt>Apellido</dt>
+		  	  <dd><%= apellido %></dd>
+			  <dt>Amigos</dt>
+			  <% _.each(amigos, function(amigo) { %>
+			  <dd><a id="link-perfilAmigo" href="#/<%= amigo.id %>/amigo"><%= amigo.username %></a></dd>
+			  <% }); %>
+			</dl>
+		  </div>
+		</div>
+	</script>
+
+	<script type="text/template" id="inicio-template">
+		Pagina de inicio.
+	</script>
+
+	<script type="text/template" id="misViajes-template">
+		Mis viajes:
+
+		<div id="miViaje-container">
+		</div>
+	</script>
+
+	<script type="text/template" id="error-template">
+		<div class="panel panel-danger">
+		  <div class="panel-heading">
+		  	<h3 class="panel-title">Error</h3>
+		  </div>
+		  <div class="panel-body">
+				<div>Status: <%= status %></div>
+				<div>Message: <%= message %></div>
+
+		  </div>
+		</div>
+	</script>
+
+
+    <!-- Libraries -->
+    <script src="js/lib/jquery-min.js"></script>
+		<script src="js/lib/bootstrap.min.js"></script>
+		<script src="js/lib/bootstrap-datepicker.min.js"></script>
+		<script src="js/lib/underscore.js"></script>
+		<script src="js/lib/backbone-min.js"></script>
+
+		<!-- Models and collections -->
+		<script src="js/models/itinerario-model.js"></script>
+		<script src="js/models/opcion-model.js"></script>
+		<script src="js/models/viaje-model.js"></script>
+		<script src="js/models/usuario-model.js"></script>
+		<script src="js/models/error-model.js"></script>
+		<script src="js/collections/itinerario-collection.js"></script>
+		<script src="js/collections/opcion-collection.js"></script>
+		<script src="js/collections/viajes-collection.js"></script>
+
+		<!-- Views -->
+		<script src="js/views/itinerario-view.js"></script>
+		<script src="js/views/miViaje-view.js"></script>
+		<script src="js/views/misViajes-view.js"></script>
+		<script src="js/views/opcion-view.js"></script>
+		<script src="js/views/buscar-view.js"></script>
+		<script src="js/views/perfil-view.js"></script>
+		<script src="js/views/inicio-view.js"></script>
+		<script src="js/views/error-view.js"></script>
+
+		<!-- Routers -->
+		<script src="js/routers/router.js"></script>
+
+    <!-- Geolocation and map -->
+    <script src="/js/map/geo.js"></script>
+
+		<!-- App -->
+		<script src="js/app.js"></script>
+
+  </body>
+</html>
